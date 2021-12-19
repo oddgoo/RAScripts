@@ -11,6 +11,11 @@ function current_request() => byte(0x09CA74) // Highest unlocked request (On Sav
 function after_intro() => bit0(0x0a0522) == 1
 function during_intro() => bit0(0x0a0522) == 0
 
+rich_presence_display(" Request #{0} | {1} Steps taken",
+    rich_presence_value("Request", current_request())
+    rich_presence_value("Lives", steps())
+)
+
 //===================== Core Progression ==================================
 
 function cheev_complete_request(request, points, title)
@@ -23,6 +28,8 @@ function cheev_complete_request(request, points, title)
                   && prev(steps()) > 0 //Duct tape quality Save protection, check if steps were more than 1 in the previous frame
     )
 }
+
+
 
 cheev_complete_request(0, 5, "Peter Bocchwinkur")
 cheev_complete_request(1, 5, "Christina")
@@ -88,7 +95,7 @@ cheev_items("Slippers", 1, bit3(0x09c9f1), bit4(0x09c9f1), bit5(0x09c9f1))  // P
 cheev_items("Toy Horse", 2, bit6(0x09c9f1), bit7(0x09c9f1), bit0(0x09c9f2))  // Ring, Lighter, Toy Horse
 cheev_items("Mask", 3, bit1(0x09c9f2), bit2(0x09c9f2), bit3(0x09c9f2)) // Wallet, Address Book, Mask
 cheev_items("Grasshopper Cocktail", 4, bit4(0x09c9f2), bit5(0x09c9f2), bit6(0x09c9f2)) // Cocktail, Hat, PC,
-cheev_items("Movie Flyer", 5, bit7(0x09c9f2), bit0(0x09c9f3), bit1(0x09c9f3)) // Wine, Bathing Suite, Movie Flyer
+cheev_items("Bathing Suit", 5, bit7(0x09c9f2), bit0(0x09c9f3), bit1(0x09c9f3)) // Wine, Bathing Suite, Movie Flyer
 cheev_items("Mr Charbonie's Pot", 6, bit2(0x09c9f3), bit3(0x09c9f3), bit4(0x09c9f3)) // Record, Pot, Pinball Token
 cheev_items("Miss Hanayama's Makeup", 7, bit5(0x09c9f3), bit6(0x09c9f3), bit7(0x09c9f3)) //Makeup, Yukata, Black Suite
 cheev_items("Coconut", 8, bit0(0x09c9f4), bit1(0x09c9f4), bit2(0x09c9f4)) // Bow Tie, Score, Coconut
@@ -98,7 +105,7 @@ cheev_items("Stuffed Horse", 11, bit1(0x09c9f5), bit2(0x09c9f5), bit3(0x09c9f5))
 cheev_items("Edo's Diary", 14, bit4(0x09c9f5), bit5(0x09c9f5), bit6(0x09c9f5)) //Movie Flyer, Edo's Diary, Shorts
 cheev_items("Miniature of Ruins", 15, bit7(0x09c9f5), bit0(0x09c9f6), bit1(0x09c9f6)) //Record, Wrist Wratch, Miniature of Ruins
 cheev_items("Aloha Shirt", 16, bit2(0x09c9f6), bit3(0x09c9f6), bit4(0x09c9f6)) //Fruit Basket, Model of Hotel Sign, Aloha Shirt
-cheev_items("Champion Belt", 17, bit5(0x09c9f6), bit6(0x09c9f6), bit7(0x09c9f6)) //Collar Pudding Champion Belt
+cheev_items("Collar", 17, bit5(0x09c9f6), bit6(0x09c9f6), bit7(0x09c9f6)) //Collar Pudding Champion Belt
 cheev_items("Model Aircraft", 18, bit0(0x09c9f7), bit1(0x09c9f7), bit2(0x09c9f7)) // Diner Menu Toilet Deodoriser, Model Aircraft
 
 //TODO, check if a ticket is removed when exchanged for the prize, in that case use the prize IDs, not the ticket ID
