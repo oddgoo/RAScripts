@@ -104,8 +104,6 @@ cheev_items("Aloha Shirt", 16, bit2(0x09c9f6), bit3(0x09c9f6), bit4(0x09c9f6)) /
 cheev_items("Collar", 17, bit5(0x09c9f6), bit6(0x09c9f6), bit7(0x09c9f6)) //Collar Pudding Champion Belt
 cheev_items("Model Aircraft", 18, bit0(0x09c9f7), bit1(0x09c9f7), bit2(0x09c9f7)) // Diner Menu Toilet Deodoriser, Model Aircraft
 
-//TODO, check if a ticket is removed when exchanged for the prize, in that case use the prize IDs, not the ticket ID
-
 //========== Steps ==========
 function achievement_steps(steps, points, title)
 {
