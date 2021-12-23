@@ -4,8 +4,8 @@
 
 //Note: These are all tested on Save File 1. It MAY work on others.
 
-function steps() => dword(0x09CA18) // Steps/Pedometer (On Save Data _1)
-function current_request() => byte(0x0996b5) // Highest unlocked request (On RAM)
+function steps() => dword(0x09CA18) // Steps/Pedometer
+function current_request() => byte(0x0996b5) // Highest unlocked request (On RAM ?)
 function after_intro() => bit0(0x0a0522) == 1
 function during_intro() => bit0(0x0a0522) == 0
 
