@@ -2,12 +2,10 @@
 // #ID = 9496
 // md5: 24757b6de971131ebcf174cc91694216 - Europe
 
-//Note: These are all on Save File 1. not on RAM.
+//Note: These are all tested on Save File 1. It MAY work on others.
 
-// TODO: check if notes should reference a specific group or bit lenght
-
-function steps() => dword(0x09CA18) // Steps/Pedometer (On Save Data _1)
-function current_request() => byte(0x0996b5) // Highest unlocked request (On RAM)
+function steps() => dword(0x09CA18) // Steps/Pedometer
+function current_request() => byte(0x0996b5) // Highest unlocked request (On RAM ?)
 function after_intro() => bit0(0x0a0522) == 1
 function during_intro() => bit0(0x0a0522) == 0
 
@@ -105,8 +103,6 @@ cheev_items("Miniature of Ruins", 15, bit7(0x09c9f5), bit0(0x09c9f6), bit1(0x09c
 cheev_items("Aloha Shirt", 16, bit2(0x09c9f6), bit3(0x09c9f6), bit4(0x09c9f6)) //Fruit Basket, Model of Hotel Sign, Aloha Shirt
 cheev_items("Collar", 17, bit5(0x09c9f6), bit6(0x09c9f6), bit7(0x09c9f6)) //Collar Pudding Champion Belt
 cheev_items("Model Aircraft", 18, bit0(0x09c9f7), bit1(0x09c9f7), bit2(0x09c9f7)) // Diner Menu Toilet Deodoriser, Model Aircraft
-
-//TODO, check if a ticket is removed when exchanged for the prize, in that case use the prize IDs, not the ticket ID
 
 //========== Steps ==========
 function achievement_steps(steps, points, title)
