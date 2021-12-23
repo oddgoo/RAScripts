@@ -13,7 +13,7 @@ function during_intro() => bit0(0x0a0522) == 0
 
 rich_presence_display(" Request #{0} | {1} Steps taken",
     rich_presence_value("Request", current_request()),
-    rich_presence_value("Lives", steps())
+    rich_presence_value("Steps", steps())
 )
 
 //===================== Core Progression ==================================
