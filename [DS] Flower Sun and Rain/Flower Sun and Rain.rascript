@@ -2,7 +2,7 @@
 // #ID = 9496
 // md5: 24757b6de971131ebcf174cc91694216 - Europe
 
-//Note: These are all on Save File 1. not on RAM.
+//Note: These are all tested on Save File 1. It MAY work on others.
 
 // TODO: check if notes should reference a specific group or bit lenght
 
