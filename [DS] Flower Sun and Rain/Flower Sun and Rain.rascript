@@ -4,8 +4,6 @@
 
 //Note: These are all tested on Save File 1. It MAY work on others.
 
-// TODO: check if notes should reference a specific group or bit lenght
-
 function steps() => dword(0x09CA18) // Steps/Pedometer (On Save Data _1)
 function current_request() => byte(0x0996b5) // Highest unlocked request (On RAM)
 function after_intro() => bit0(0x0a0522) == 1
