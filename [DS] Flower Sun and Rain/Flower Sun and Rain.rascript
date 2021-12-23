@@ -7,12 +7,12 @@
 // TODO: check if notes should reference a specific group or bit lenght
 
 function steps() => dword(0x09CA18) // Steps/Pedometer (On Save Data _1)
-function current_request() => byte(0x09CA74) // Highest unlocked request (On Save Data _1), in game they start from #00
+function current_request() => byte(0x0996b5) // Highest unlocked request (On RAM)
 function after_intro() => bit0(0x0a0522) == 1
 function during_intro() => bit0(0x0a0522) == 0
 
 rich_presence_display(" Request #{0} | {1} Steps taken",
-    rich_presence_value("Request", current_request())
+    rich_presence_value("Request", current_request()),
     rich_presence_value("Lives", steps())
 )
 
@@ -22,7 +22,7 @@ function cheev_complete_request(request, points, title)
 {
     achievement(
         title = title, 
-        description = "Complete Request #" + (request-1), 
+        description = "Complete Request #" + (request), 
         points = points,
         trigger = current_request() == request + 1 && prev(current_request()) == request && after_intro()
                   && prev(steps()) > 0 //Duct tape quality Save protection, check if steps were more than 1 in the previous frame
@@ -49,16 +49,13 @@ cheev_complete_request(14, 5, "Yoshimitsu Koshimizu")
 cheev_complete_request(15, 5, "Natsuko Akai")
 cheev_complete_request(16, 5, "Sandance Ritz")
 cheev_complete_request(17, 5, "Toriko Kusabi")
-//cheev_complete_request(18, 25, "Sumio Mondo0")
-
-
 
 //========== Single Bit Game Clear and Costumes ==========
 
 function cheev_single_bit(address, points, title, description){
     achievement(
         title = title, 
-        description = "Title", 
+        description = description, 
         points = points,
         trigger = address == 1 && prev(address) == 0 && after_intro() 
                   && prev(steps()) > 0 //Duct tape quality Save protection, check if steps were more than 1 in the previous frame
@@ -67,9 +64,10 @@ function cheev_single_bit(address, points, title, description){
 
 cheev_single_bit(bit5(0x09ca1d), 25, "Sumio Mondo", "Clear the Game")
 
-cheev_single_bit(bit6(0x09ca1d), 5, "Traditional", "Obtain the Kimono Costume")
-cheev_single_bit(bit7(0x09ca1d), 5, "Neigh!", "Obtain the Horse Costume")
-cheev_single_bit(bit0(0x09ca1d), 5, "A Tres Caídase", "Obtain the Luchador Costume")
+cheev_single_bit(bit6(0x09ca1c), 5, "Traditional", "Obtain the Kimono Costume")
+cheev_single_bit(bit7(0x09ca1c), 5, "Neigh!", "Obtain the Horse Costume")
+
+cheev_single_bit(bit0(0x09ca1d), 5, "A Tres Caídas", "Obtain the Luchador Costume")
 cheev_single_bit(bit1(0x09ca1d), 5, "Room Service", "Obtain the Hotel Staff Uniform")
 cheev_single_bit(bit2(0x09ca1d), 5, "Vacation", "Obtain the Tourist Clothes")
 cheev_single_bit(bit3(0x09ca1d), 5, "No More Heroes", "Obtain the Travis Touchdown Costume")
@@ -127,6 +125,6 @@ achievement_steps(10000, 5, "An empty Walk")
 achievement_steps(20000, 5, "A blank Jog")
 achievement_steps(30000, 5, "A desserted Hike")
 achievement_steps(40000, 5, "A pointless Trip")
-achievement_steps(50000, 5, "A Journey to owhere")
+achievement_steps(50000, 5, "A Journey to nowhere")
 achievement_steps(75000, 10, "An Achievement of emptiness")
 achievement_steps(100000, 25, "True Gamer") //Walk 100,000 steps to fully upgrade the Search System
