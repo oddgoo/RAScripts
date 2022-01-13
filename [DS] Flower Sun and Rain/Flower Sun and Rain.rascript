@@ -5,9 +5,12 @@
 //Note: These are all tested on Save File 1. It MAY work on others.
 
 function steps() => dword(0x09CA18) // Steps/Pedometer
+function during_request() => byte(0x078638) // Currently playing this request
 function current_request() => byte(0x0996b5) // Highest unlocked request (On RAM ?)
 function after_intro() => bit0(0x0a0522) == 1
 function during_intro() => bit0(0x0a0522) == 0
+
+rich_presence_conditional_display(during_intro(), "Intro Screen")
 
 rich_presence_display(" Request #{0} | {1} Steps taken",
     rich_presence_value("Request", current_request()),
@@ -81,7 +84,7 @@ achievement(
     points = 5,
     trigger = never( during_intro() ) &&
               ( once( item_1 + item_2 + item_3 == 2 )  )  && // save Protection
-              ( item_1 + item_2 + item_3 == 3 ) 
+              measured( item_1 + item_2 + item_3 == 3, during_request() == request ) 
     )      
     
 }    
@@ -124,3 +127,5 @@ achievement_steps(40000, 5, "A pointless Trip")
 achievement_steps(50000, 5, "A Journey to nowhere")
 achievement_steps(75000, 10, "An Achievement of emptiness")
 achievement_steps(100000, 25, "True Gamer") //Walk 100,000 steps to fully upgrade the Search System
+
+
