@@ -2,8 +2,6 @@
 // #ID = 29339
 // md5: cb860501a5f16a84fe2359e4498d0fe4
 
-
-
 // =====================  Outline ===================== 
 
 // # Progress
@@ -43,6 +41,10 @@ function game_mode() => byte(0x0001CE)
 //        0x02 = Death
 //        0x03 = Complete
 function game_status() => byte(0x0001D8)
+status_title = 0
+status_game = 1
+status_death = 2
+status_complete = 3 //applies to Gentle Mode only
 
 // $065F: [16bit] Left Column Life
 function left_column_life() => word(0x00065F)
@@ -63,8 +65,8 @@ mode = {
 
 // function died() {}
 
-low_health_threshold = 30
-high_health_threshold = 90
+low_health_threshold = 80
+high_health_threshold = 100
 
 function is_gentle_mode() => game_mode() == 00
 function is_endless_mode() => game_mode() == 01
@@ -75,6 +77,10 @@ function won_gentle() {
 
 function is_playing() {
     return game_status() == 1
+}
+
+function in_title() {
+    return game_status() == 0
 }
 
 function beat_stomped(){
@@ -89,6 +95,10 @@ function columns_at_high_health(){
     return left_column_life() > high_health_threshold && right_column_life() > high_health_threshold
 }
 
+function disable_in_title(){
+    return never(game_status() == status_title)
+}
+
 
 // ==================== Achievement Functions ===================
 
@@ -96,45 +106,51 @@ function columns_at_high_health(){
 achievement(title = "Bradycardia", 
             description = "Reach 100 points in Gentle mode", 
             points = 3,
-            trigger = is_playing() && is_gentle_mode() && score() >= 100
+            trigger = is_playing() && is_gentle_mode() && score() >= 100,
+            badge="475346"
             )
 
 achievement(title = "Sinus Rhythm", 
             description = "Complete Gentle Mode", 
             points = 5,
-            trigger = won_gentle()
+            trigger = is_playing() && won_gentle(),
+            badge="475347"
             )
 
-function endless_score(title, target_score, points){
+function endless_score(title, target_score, points, badge){
     achievement(title = title, 
             description = "Reach " + target_score + " points in Endless mode", 
             points = points,
-            trigger = is_playing() && is_endless_mode() && score() >= target_score
+            trigger = is_playing() && is_endless_mode() && score() >= target_score,
+            badge = badge
             )
 }
  
-endless_score("Fibrillation", 60, 5)
-endless_score("Arrhythmia", 90, 10)
-endless_score("Tachycardia", 130, 25)
+endless_score("Fibrillation", 60, 5, "475348")
+endless_score("Arrhythmia", 90, 10, "475349")
+endless_score("Tachycardia", 130, 25, "475350")
 
 
 //TODO only trigger after game starts
 achievement(title = "Ahimsa", 
             description = "Complete Gentle Mode without stomping any beat", 
             points = 5,
-            trigger = never(beat_stomped()) && trigger_when(won_gentle())
+            trigger = once(is_playing()) && never(beat_stomped()) && trigger_when(won_gentle()),
+            badge="475351"
             )
             
 //TODO only trigger after game starts
 achievement(title = "Ischemia", 
             description = "Keep the columns at less than 30% for the duration of 100 score points (Gentle Mode recommended)", 
             points = 10,
-            trigger =  never(!columns_at_low_health()) && trigger_when(repeated(100, score() > prev(score())))
+            trigger = never(!is_playing()) && never(!columns_at_low_health()) && trigger_when(repeated(100, score() > prev(score()))),
+            badge="475352"
             )
             
 //TODO only trigger after game starts
 achievement(title = "Palpitation", 
             description = "Complete Gentle Mode without any column reaching less than 90% health", 
             points = 10,
-            trigger = once(game_status() == 00) && never(!columns_at_high_health()) && trigger_when(won_gentle())
+            trigger = once(in_title()) && once(is_playing()) && never(!columns_at_high_health()) && trigger_when(won_gentle()),
+            badge="475353"
             )
