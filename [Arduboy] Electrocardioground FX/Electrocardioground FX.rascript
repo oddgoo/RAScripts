@@ -52,14 +52,7 @@ function left_column_life() => word(0x00065F)
 // $0665: [16bit] Right Column Life
 function right_column_life() => word(0x000665)
 
-// ===================== Rich Presence =================
 
-mode = {
-    0: "Gentle",
-    1: "Endless",
-}
-
-// add rich presence function
 
 // ===================== Helper functions ======================
 
@@ -76,11 +69,19 @@ function won_gentle() {
 }
 
 function is_playing() {
-    return game_status() == 1
+    return game_status() == status_game
+}
+
+function started_playing() {
+    return game_status() == status_game && prev(game_status()) == status_title
 }
 
 function in_title() {
-    return game_status() == 0
+    return game_status() == status_title
+}
+
+function dead(){
+    return game_status() == status_death
 }
 
 function beat_stomped(){
@@ -98,6 +99,26 @@ function columns_at_high_health(){
 function disable_in_title(){
     return never(game_status() == status_title)
 }
+
+// ===================== Rich Presence =================
+
+modeLookup = {
+    0: "Gentle",
+    1: "Endless",
+}
+
+rich_presence_conditional_display(in_title(), "Title Screen")
+
+rich_presence_conditional_display(game_status() == 03, "Gentle Mode Complete!")
+
+rich_presence_conditional_display(dead(), "Dead! Mode: {0}. Score {1}",
+    rich_presence_lookup("Mode", game_mode(), modeLookup),
+    rich_presence_value("Score", score())
+)
+rich_presence_display("Keeping the beat alive. Mode: {0}. Score {1}",
+    rich_presence_lookup("Mode", game_mode(), modeLookup),
+    rich_presence_value("Score", score())
+)
 
 
 // ==================== Achievement Functions ===================
@@ -131,26 +152,28 @@ endless_score("Arrhythmia", 90, 10, "475349")
 endless_score("Tachycardia", 130, 25, "475350")
 
 
-//TODO only trigger after game starts
 achievement(title = "Ahimsa", 
             description = "Complete Gentle Mode without stomping any beat", 
-            points = 5,
-            trigger = once(is_playing()) && never(beat_stomped()) && trigger_when(won_gentle()),
+            points = 10,
+            trigger = once(started_playing()) && never(dead())  && never(beat_stomped()) && trigger_when(won_gentle()),
             badge="475351"
             )
-            
-//TODO only trigger after game starts
-achievement(title = "Ischemia", 
-            description = "Keep the columns at less than 30% for the duration of 100 score points (Gentle Mode recommended)", 
+
+achievement(title = "Palpitation", 
+            description = "Complete Gentle Mode without any column reaching less than 80% health", 
             points = 10,
-            trigger = never(!is_playing()) && never(!columns_at_low_health()) && trigger_when(repeated(100, score() > prev(score()))),
+            trigger = once(started_playing()) && never(dead()) && never(!columns_at_high_health()) && trigger_when(won_gentle()),
+            badge="475353"
+            )
+            
+achievement(title = "Ischemia", 
+            description = "Keep the columns at less than 65% health for the duration of 65 score points (Gentle Mode recommended)", 
+            points = 5,
+            trigger = never(!is_playing()) && never(!columns_at_low_health()) && trigger_when(repeated(65, score() > prev(score()))),
             badge="475352"
             )
             
-//TODO only trigger after game starts
-achievement(title = "Palpitation", 
-            description = "Complete Gentle Mode without any column reaching less than 90% health", 
-            points = 10,
-            trigger = once(in_title()) && once(is_playing()) && never(!columns_at_high_health()) && trigger_when(won_gentle()),
-            badge="475353"
-            )
+
+// ======================== Leaderboards ===========================
+
+leaderboard("Endless Score", "How far can you make it in Endless Mode?", is_playing() && is_endless_mode(), in_title(), dead(), score(), format="VALUE", lower_is_better=false, id=0)
