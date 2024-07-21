@@ -65,7 +65,7 @@ function is_gentle_mode() => game_mode() == 00
 function is_endless_mode() => game_mode() == 01
 
 function won_gentle() {
-    return game_mode() == 00 && game_status() == 03 && prev(game_status())==01
+    return game_status() == status_complete && prev(game_status())==status_game
 }
 
 function is_playing() {
@@ -124,22 +124,28 @@ rich_presence_display("Keeping the beat alive. Mode: {0}. Score {1}",
 // ==================== Achievement Functions ===================
 
 
-achievement(title = "Bradycardia", 
+achievement(id=421339,
+            title = "Bradycardia", 
             description = "Reach 100 points in Gentle mode", 
             points = 3,
             trigger = is_playing() && is_gentle_mode() && score() >= 100,
-            badge="475346"
+            badge="475346",
+            type="progression"
             )
 
-achievement(title = "Sinus Rhythm", 
-            description = "Complete Gentle Mode", 
+achievement(id=421340,
+            title = "Sinus Rhythm", 
+            description = "Complete Gentle mode (Reach 200 points)", 
             points = 5,
-            trigger = is_playing() && won_gentle(),
-            badge="475347"
+            trigger = won_gentle() && game_mode() == 00,
+            badge="475347",
+            type="win_condition"
             )
 
-function endless_score(title, target_score, points, badge){
-    achievement(title = title, 
+function endless_score(id, title, target_score, points, badge){
+    achievement(
+            id = id,
+            title = title, 
             description = "Reach " + target_score + " points in Endless mode", 
             points = points,
             trigger = is_playing() && is_endless_mode() && score() >= target_score,
@@ -147,32 +153,36 @@ function endless_score(title, target_score, points, badge){
             )
 }
  
-endless_score("Fibrillation", 60, 5, "475348")
-endless_score("Arrhythmia", 90, 10, "475349")
-endless_score("Tachycardia", 130, 25, "475350")
+endless_score(421341, "Fibrillation", 60, 5, "475348")
+endless_score(421342, "Arrhythmia", 90, 10, "475349")
+endless_score(421343, "Tachycardia", 130, 25, "475350")
 
 
-achievement(title = "Ahimsa", 
-            description = "Complete Gentle Mode without stomping any beat", 
+achievement(id=421344,
+            title = "Ahimsa", 
+            description = "Complete Gentle mode without stomping any beat", 
             points = 10,
-            trigger = once(started_playing()) && never(dead())  && never(beat_stomped()) && trigger_when(won_gentle()),
+            trigger = once(started_playing()) && never(dead())  && never(beat_stomped()) && game_mode() == 00 && trigger_when(won_gentle()),
             badge="475351"
             )
 
-achievement(title = "Palpitation", 
-            description = "Complete Gentle Mode without any column reaching less than 80% health", 
+achievement(id=421346,
+            title = "Palpitation", 
+            description = "Complete Gentle mode without any column reaching less than 80% health", 
             points = 10,
-            trigger = once(started_playing()) && never(dead()) && never(!columns_at_high_health()) && trigger_when(won_gentle()),
+            trigger = once(started_playing()) && never(dead()) && never(!columns_at_high_health()) && game_mode() == 00 && trigger_when(won_gentle()),
             badge="475353"
             )
-            
-achievement(title = "Ischemia", 
-            description = "Keep the columns at less than 65% health for the duration of 65 score points (Gentle Mode recommended)", 
+ 
+achievement(id=421345,
+            title = "Ischemia", 
+            description = "Keep the columns at less than 65% health for the duration of 65 score points (Gentle mode recommended)", 
             points = 5,
-            trigger = never(!is_playing()) && never(!columns_at_low_health()) && trigger_when(repeated(65, score() > prev(score()))),
+            trigger = measured(repeated(65, score() > prev(score()) && never(!columns_at_low_health())), 
+                               when=is_playing(), 
+                               format="percent"),
             badge="475352"
             )
-            
 
 // ======================== Leaderboards ===========================
 
